@@ -9,6 +9,20 @@ public class GameDataScript : MonoBehaviour
     public ShipData[] ships;
     public static GameDataScript instance;
     public float coin;      //전체코인-TotalCoin
+    private int _select;
+    public int select
+    {
+        get
+        {
+            _select = PlayerPrefs.GetInt("ChrSelect", 0);
+            return _select;
+        }
+        set
+        {
+            _select=value;
+            PlayerPrefs.SetInt("ChrSelect",_select);
+        }
+    }
     private void Awake()
     {
         if(instance == null)
@@ -41,7 +55,7 @@ public class GameDataScript : MonoBehaviour
             }
             else
             {
-                //영상에서 오류 있다고 어쩌구 함.섹션 10-10-7:40
+                //영상에서 오류 있다고 어쩌구 함.섹션10-10 - 7:40초
                 locked=PlayerPrefs.GetInt("Chr_Locked"+i.ToString(), 1);
             }
             ships[i-1] =new ShipData(id,base_dmg, name, kName, chr_level, locked);

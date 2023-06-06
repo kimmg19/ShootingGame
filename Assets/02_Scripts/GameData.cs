@@ -9,9 +9,12 @@ namespace Game
     {
         public int id; public float base_dmg; public string name;
         public string kName;
-        public int chr_level; public int locked;
+        public int chr_level;
+        public int locked;
         public float dmg;
-        public ShipData(int id, float base_dmg, string name, string kName, int chr_level = 1, int locked = 1, float dmg = 1)
+        public float nextDmg;
+        public ShipData(int id, float base_dmg, string name, string kName, int chr_level = 1,
+            int locked = 1, float dmg = 1,float nextDmg=1)
         {
             this.id = id;
             this.base_dmg = base_dmg;
@@ -20,11 +23,18 @@ namespace Game
             this.chr_level = chr_level;
             this.locked = locked;
             this.dmg = dmg;
+            this.nextDmg = nextDmg;
+        }
+        //11-6
+        public string GetImageName()
+        {
+            return "Character/" + id.ToString() + "/0";
         }
         //chr_level 추가시 이 함수 꼭 실행.-레벨 증가할때
         public void SetDamage()
         {
             this.dmg = chr_level * base_dmg;
+            this.nextDmg = (chr_level + 1) * base_dmg;
         }
         public void show()
         {
