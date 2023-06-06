@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Assets/04_Prefabs/EnemyShot.prefab
 public class EnemyShotScript : MonoBehaviour
 {
     public float speed = 4;

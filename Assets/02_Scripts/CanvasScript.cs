@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//ÀÌ¿ë ¾ÈµÊ.
 public class CanvasScript : MonoBehaviour
 {
     public Text myText;

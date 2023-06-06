@@ -2,16 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Assets/04_Prefabs/PlayerShot.prefab
 public class ShotScript : MonoBehaviour
 {
     public float speed = 10;
     public GameObject shotEffect;
-    public GameObject coin;
+    public GameObject coin;        //Coin 프리팹 연결
     public GameObject explosion;
     void Update()
     {
         //발사체 이동
-        transform.Translate(Vector3.right *Time.deltaTime* speed);
+        transform.Translate(Vector3.right * speed * Time.deltaTime);
     }
 
     //발사체에서 충돌검사
@@ -24,11 +25,11 @@ public class ShotScript : MonoBehaviour
             AsteroidScript asteroidScript=collision.gameObject.GetComponent<AsteroidScript>();
             asteroidScript.hp -= 3;
 
-            //발사체가 소행성에 적중시 shotEfffect 생성.
+            //발사체가 소행성에 적중시 적중효과 shotEfffect 생성.
             Instantiate(shotEffect,transform.position,Quaternion.identity);
             if (asteroidScript.hp <= 0)
             {
-                //발사체가 소행성에 적중시 exlosion 생성.
+                //소행성 발사체로 파괴시 exlosion 생성.
                 Instantiate(explosion,transform.position,Quaternion.identity) ;
                 Vector3 randomPos = new Vector3(Random.Range(-0.1f, 0.1f),
                     Random.Range(-0.1f, 0.1f), 0);
@@ -40,9 +41,9 @@ public class ShotScript : MonoBehaviour
                  coinScript의 coinSize 변수에 asteroidScript의 coin 값을 할당합니다.
                  */
                 GameObject coinObj = Instantiate(coin, transform.position + randomPos, Quaternion.identity);
-                CoinScript coinScript = coinObj.GetComponent<CoinScript>();
-                coinScript.coinSize = asteroidScript.coin;
 
+                //코인의 가치 설정. PlayerScript에서 사용됨.
+                coinObj.GetComponent<CoinScript>().coinSize = asteroidScript.coin;
                 Destroy(collision.gameObject);  //hp<=0일 때 소행성 제거                
             }
             //발사체가 적에 적중시 발사체 제거
@@ -54,11 +55,11 @@ public class ShotScript : MonoBehaviour
             EnemyScript enemyScript = collision.gameObject.GetComponent<EnemyScript>();
             enemyScript.hp -= 3;
 
-            //발사체가 적에 적중시 shotEfffect 생성.
+            //발사체가 적에 적중시 적중효과 shotEfffect 생성.
             Instantiate(shotEffect, transform.position, Quaternion.identity);
             if (enemyScript.hp <= 0)
             {
-                //발사체가 적에 적중시 exlosion 생성.
+                //발사체로 적 파괴시 exlosion 생성.
                 Instantiate(explosion, transform.position, Quaternion.identity);
                 Vector3 randomPos = new Vector3(Random.Range(-0.1f, 0.1f),
                     Random.Range(-0.1f, 0.1f), 0);
@@ -70,8 +71,8 @@ public class ShotScript : MonoBehaviour
                  coinScript의 coinSize 변수에 enemyScript의 coin 값을 할당합니다.
                  */
                 GameObject coinObj = Instantiate(coin, transform.position + randomPos, Quaternion.identity);
-                CoinScript coinScript = coinObj.GetComponent<CoinScript>();
-                coinScript.coinSize = enemyScript.coin;
+                coinObj.GetComponent<CoinScript>().coinSize = enemyScript.coin;
+                
                 //hp<=0일 때 적 제거
                 Destroy(collision.gameObject);  
 

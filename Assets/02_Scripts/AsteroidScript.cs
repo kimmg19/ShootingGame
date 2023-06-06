@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//04_Prefabs-Asteroid01
 public class AsteroidScript : MonoBehaviour
 {
-    public float speed = 4.5f;     //家青己 捞悼 加档
-    public float rotSpeed = 50; //家青己 雀傈 加档
-    public float coin = 2;
+    public float speed = 4.5f;      //家青己 捞悼 加档
+    public float rotSpeed = 50;     //家青己 雀傈 加档
+    public float coin = 2;          //家青己 颇鲍矫 掘绰 内牢
     public int hp = 10;
     void Update()
     {

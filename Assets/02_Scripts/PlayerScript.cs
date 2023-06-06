@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+//GameScene/Player
 public class PlayerScript : MonoBehaviour
 {
     public GameObject shot;
@@ -19,9 +20,8 @@ public class PlayerScript : MonoBehaviour
         min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
         //카메라 오른쪽 위 구석
         max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
-
-        colSize=GetComponent<BoxCollider2D>().size;
-        //콜라이더의 사이즈 /2의 값
+        colSize =GetComponent<BoxCollider2D>().size;
+        //캐릭터 콜라이더의 사이즈 /2의 값
         chrSize = new Vector2(colSize.x/2,colSize.y/2);   
     }
 
@@ -34,7 +34,7 @@ public class PlayerScript : MonoBehaviour
     }
     //플레이어 이동 함수
     void Move()
-    {
+    {  
         float x = Input.GetAxisRaw("Horizontal");   //1,-1 출력
         float y = Input.GetAxisRaw("Vertical");     //1,-1 출력
 
@@ -47,12 +47,13 @@ public class PlayerScript : MonoBehaviour
         //clamp 함수 밑의 주석문을 함수로 구현.
         newX = Mathf.Clamp(newX, min.x + chrSize.x, max.x - chrSize.x);
         newY = Mathf.Clamp(newY, min.y + chrSize.y, max.y - chrSize.y);
-
+        
         transform.position = new Vector3(newX, newY, transform.position.z);
     }
 
-    public float shotMax = 0.2f;
     public float shotDelay = 0;
+    public float shotMax = 0.2f;
+    
     //발사체 생성 함수
     void PlayerShot()
     {
@@ -79,10 +80,10 @@ public class PlayerScript : MonoBehaviour
         {
             // GetComponent<CoinScript>()는 충돌한 게임 객체에서 CoinScript 컴포넌트를 가져옵니다.
             CoinScript coinScript=collision.gameObject.GetComponent<CoinScript>();
+
             GameManager.instance.coinInGame += coinScript.coinSize;
             GameDataScript.instance.AddCoin(coinScript.coinSize);
-            print("Coin"+GameManager.instance.coinInGame);
-
+            print("Coin: "+GameManager.instance.coinInGame);
             GameManager.instance.coinText.text = GameDataScript.instance.GetCoin().ToString();            
 
             Destroy(collision.gameObject);

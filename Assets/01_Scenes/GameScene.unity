@@ -160,7 +160,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.4, y: 2.4}
+    oldSize: {x: 2.6666667, y: 2.6666667}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -693,7 +693,7 @@ MonoBehaviour:
   - {fileID: 2407531645984065412, guid: 973eaab718ad95d4a8416b382891b1b9, type: 3}
   - {fileID: 7821988801654892230, guid: 155e5e88cffa5f94fb024eedb70d8fe3, type: 3}
   - {fileID: 5267992641596431647, guid: 30920019d07a5f94c85b1d13df8eb51a, type: 3}
-  coin: 0
+  coinInGame: 0
   maxRight: 0
 --- !u!4 &398905666
 Transform:

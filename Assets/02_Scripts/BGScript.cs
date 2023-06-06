@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//GameScene-BG-bg1,bg2
 public class BGScript : MonoBehaviour
 {
     public float speed = 1.3f;      //뒷배경 이동 속도.

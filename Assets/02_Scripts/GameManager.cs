@@ -19,12 +19,12 @@ public class GameManager : MonoBehaviour
     {
         instance = this; 
     }
-
+    
     private void Start()
     {
         coinInGame = 0;
-        coinText.text = GameDataScript.instance.GetCoin().ToString();    //코인 0으로 초기화. coinText.text는 string 형이기 때문에 ToString을 통해 맞춰줌.
-        maxRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).x;        //해상도가 변할 때 적 출현 위치 변하게.
+        coinText.text = GameDataScript.instance.GetCoin().ToString();           //코인 0으로 초기화. coinText.text는 string 형이기 때문에 ToString을 통해 맞춰줌.
+        maxRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).x;    //해상도가 변할 때 적 출현 위치 변하게.
     }
 
     void Update()
