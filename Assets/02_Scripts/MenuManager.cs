@@ -1,16 +1,18 @@
-using Game;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Game;
+using UnityEngine.UI;
 
+//MenuScene/MenuManager
 public class MenuManager : MonoBehaviour
 {
     public GameObject item;
     public GameObject content;
-
-
+    public GameObject addButtonObj;
+    public GameObject clearButtonObj;
+    public Text coinText;
+    public Image coinImage;
     private void Start()
     {
         int shipLength=GameDataScript.instance.ships.Length;
@@ -20,7 +22,7 @@ public class MenuManager : MonoBehaviour
             ShipData ship= GameDataScript.instance.ships[i];
             GameObject obj=Instantiate(item,transform.position,Quaternion.identity);
             MenuItemScript curItem= obj.GetComponent<MenuItemScript>();
-            curItem.SetUI(ship.name, ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString());
+            curItem.SetUI(ship.name.ToString(), ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString());
             curItem.id = ship.id;
             obj.name=i.ToString();
             obj.transform.SetParent(content.transform,false);
@@ -31,6 +33,8 @@ public class MenuManager : MonoBehaviour
                 ship.GetImageName());
             GetComponent<ScrollViewSnap>().item.Add(obj);
         }
+        //coinText.text = GameDataScript.instance.GetCoin().ToString();
+
     }
     public void GoGameScene()
     {
@@ -39,5 +43,14 @@ public class MenuManager : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+    }
+    public void AddTextCoin()
+    {
+        GameDataScript.instance.AddCoin(10000);
+        coinText.text = GameDataScript.instance.GetCoin().ToString();
+    }
+    public void ClearPrefAction()
+    {
+        PlayerPrefs.DeleteAll();
     }
 }

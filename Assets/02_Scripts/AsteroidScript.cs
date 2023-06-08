@@ -20,4 +20,4 @@ public class AsteroidScript : MonoBehaviour
     {
         Destroy(gameObject);
     }
-}
+} 

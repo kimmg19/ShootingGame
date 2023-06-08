@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//11-8~11
 public class ScrollViewSnap : MonoBehaviour
 {
     public List<GameObject>item;
@@ -17,9 +19,7 @@ public class ScrollViewSnap : MonoBehaviour
     void Start()
     {
         int buttonLenght=item.Count;
-        distance=new float[buttonLenght];
-        
-        
+        distance=new float[buttonLenght];        
     }
 
     // Update is called once per frame

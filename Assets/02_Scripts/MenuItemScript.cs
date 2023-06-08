@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//11-4
+//11-4.MenuScene/Canvas/Panel/Scroll View/Viewport/Content/MenuItem
 public class MenuItemScript : MonoBehaviour
 {
     public Button unlockButton;
     public int id;
-    public Text shitNameText;
+    public Text shipNameText;
     public Text levelText;
     public Text dmgText;
     public Text nextDmgText;
@@ -18,10 +18,10 @@ public class MenuItemScript : MonoBehaviour
     public void SetUI(string shipName,string shipLevel,
         string shipdmg,string shipNextDmg)
     {
-        this.shitNameText.text = shipName;
-        this.levelText.text = shipLevel;
-        this.dmgText.text = shipdmg;
-        this.nextDmgText.text = shipNextDmg;
+        shipNameText.text = shipName;
+        levelText.text = shipLevel;
+        dmgText.text = shipdmg;
+        nextDmgText.text = shipNextDmg;
 
     }
 

@@ -1,4 +1,3 @@
-
 using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
@@ -36,6 +35,7 @@ namespace Game
             this.dmg = chr_level * base_dmg;
             this.nextDmg = (chr_level + 1) * base_dmg;
         }
+
         public void show()
         {
             Debug.Log("id: " + id + " base_dmg: " + base_dmg + " name: " + name +

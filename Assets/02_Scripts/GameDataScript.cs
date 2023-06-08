@@ -39,6 +39,7 @@ public class GameDataScript : MonoBehaviour
     {
         shipTextAsset = Resources.Load<TextAsset>("ship");      //ship 이라는 엑셀 파일 로드하는 중.
         string[] lines = shipTextAsset.text.Split('\n');        //'\n' 엔터의미
+        //62줄에서 생성자를 통해 대입 함.
         ships = new ShipData[lines.Length - 2];
         for(int i = 1;i< lines.Length-1; i++)
         {
@@ -47,15 +48,15 @@ public class GameDataScript : MonoBehaviour
             float base_dmg = float.Parse(rows[1]);
             string name = rows[2];
             string kName = rows[3];
+            //PlayerPrefs.GetInt-로컬저장소에 저장,두 번째 매개변수는 해당 키로 저장된 값이 없을 경우 반환할 기본 값           
             int chr_level = PlayerPrefs.GetInt("Chr_Level" + i.ToString(), 1);
-            int locked = PlayerPrefs.GetInt("Chr_Locked" + i.ToString(), 1);
-            if (locked == 1)
+            int locked;
+            if (i == 1)
             {
                 locked = 0;
             }
             else
             {
-                //영상에서 오류 있다고 어쩌구 함.섹션10-10 - 7:40초
                 locked=PlayerPrefs.GetInt("Chr_Locked"+i.ToString(), 1);
             }
             ships[i-1] =new ShipData(id,base_dmg, name, kName, chr_level, locked);
@@ -69,6 +70,7 @@ public class GameDataScript : MonoBehaviour
     }
     public void AddCoin(float coin)
     {
+        //PlayerPrefs.SetFloat-로컬저장소에서 불어옴
         this.coin += coin;
         PlayerPrefs.SetFloat("TotalCoin", this.coin);
     }

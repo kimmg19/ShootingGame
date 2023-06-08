@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StarBGScript : MonoBehaviour
 {
-    
+     
     float speed = 0.6f;
     SpriteRenderer spr;
     void Start()

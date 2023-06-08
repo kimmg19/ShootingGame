@@ -20,7 +20,7 @@ public class ShotScript : MonoBehaviour
     {
          //collision.tag-발사체와 충돌된 물체 tag 가져옴.
         if (collision.gameObject.tag == "Asteroid")
-        {
+        { 
             //AsteroidScrpit에서 hp 값 가져오기
             AsteroidScript asteroidScript=collision.gameObject.GetComponent<AsteroidScript>();
             asteroidScript.hp -= 3;

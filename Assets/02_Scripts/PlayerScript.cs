@@ -56,7 +56,7 @@ public class PlayerScript : MonoBehaviour
     
     //발사체 생성 함수
     void PlayerShot()
-    {
+    { 
         shotDelay += Time.deltaTime;
         if (Input.GetKey(KeyCode.Space))
         {

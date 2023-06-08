@@ -5,7 +5,7 @@ using UnityEngine;
 
 //04_Prefabs/Explosion, shotEffect
 public class DisappearScript : MonoBehaviour
-{
+{ 
     public float time = 1.0f;
     void Start()
     {

@@ -5,10 +5,11 @@ using UnityEngine;
 /*화면을 16:9로 고정시키는 스크립트.
 이해보다는 사용위주이다.
 Gamescene-Main camera
+MenuScene-Main camera
  */
 
 public class CameraScript : MonoBehaviour
-{
+{ 
     private void Awake()
     {
         Camera camera=GetComponent<Camera>();
