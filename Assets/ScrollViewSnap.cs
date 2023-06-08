@@ -22,7 +22,6 @@ public class ScrollViewSnap : MonoBehaviour
         distance=new float[buttonLenght];        
     }
 
-    // Update is called once per frame
     void Update()
     {
         float item1Pos = item[1].GetComponent<RectTransform>().anchoredPosition.x;

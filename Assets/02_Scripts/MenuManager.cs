@@ -22,7 +22,7 @@ public class MenuManager : MonoBehaviour
             ShipData ship= GameDataScript.instance.ships[i];
             GameObject obj=Instantiate(item,transform.position,Quaternion.identity);
             MenuItemScript curItem= obj.GetComponent<MenuItemScript>();
-            curItem.SetUI(ship.name.ToString(), ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString());
+            curItem.SetUI(ship.name, ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString());
             curItem.id = ship.id;
             obj.name=i.ToString();
             obj.transform.SetParent(content.transform,false);
@@ -33,7 +33,18 @@ public class MenuManager : MonoBehaviour
                 ship.GetImageName());
             GetComponent<ScrollViewSnap>().item.Add(obj);
         }
-        //coinText.text = GameDataScript.instance.GetCoin().ToString();
+        if (GameDataScript.instance.GetCoin() == 0)
+        {
+            coinText.gameObject.SetActive(false);
+            coinImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            coinText.gameObject.SetActive(true);
+            coinImage.gameObject.SetActive(true);
+            coinText.text = GameDataScript.instance.GetCoin().ToString();
+
+        }
 
     }
     public void GoGameScene()
@@ -44,7 +55,7 @@ public class MenuManager : MonoBehaviour
     {
         Application.Quit();
     }
-    public void AddTextCoin()
+    public void AddTestCoin()
     {
         GameDataScript.instance.AddCoin(10000);
         coinText.text = GameDataScript.instance.GetCoin().ToString();
