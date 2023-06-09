@@ -7,23 +7,32 @@ using UnityEngine.UI;
 //MenuScene/MenuManager
 public class MenuManager : MonoBehaviour
 {
-    public GameObject item;
+    public GameObject item; //캐릭터 선택 창
     public GameObject content;
     public GameObject addButtonObj;
     public GameObject clearButtonObj;
     public Text coinText;
     public Image coinImage;
+    public static MenuManager Instance;
+    public Button startButton;
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
+        startButton.onClick.AddListener(GoGameScene);
         int shipLength=GameDataScript.instance.ships.Length;
         for (int i = 0; i < shipLength; i++)
         {
             //11-5
             ShipData ship= GameDataScript.instance.ships[i];
-            GameObject obj=Instantiate(item,transform.position,Quaternion.identity);
+            GameObject obj=Instantiate(item,transform.position,Quaternion.identity);    //메뉴 하나의 아이템이 만들어짐.
             MenuItemScript curItem= obj.GetComponent<MenuItemScript>();
-            curItem.SetUI(ship.name, ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString());
-            curItem.id = ship.id;
+            //아이템(선택 창)의 UI적용
+            curItem.SetUI(ship.name, ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString(),ship.locked,
+                ship.unlockCoin);
+            curItem.id = ship.id;       //MenuItemScript의 id 를 여기서 바꿈.0~2
             obj.name=i.ToString();
             obj.transform.SetParent(content.transform,false);
             obj.SetActive(true);
@@ -47,6 +56,7 @@ public class MenuManager : MonoBehaviour
         }
 
     }
+    
     public void GoGameScene()
     {
         SceneManager.LoadScene("GameScene");
