@@ -40,7 +40,7 @@ public class GameDataScript : MonoBehaviour
         shipTextAsset = Resources.Load<TextAsset>("ship");      //ship 이라는 엑셀 파일 로드하는 중.
         string[] lines = shipTextAsset.text.Split('\n');        //'\n' 엔터의미
         //62줄에서 생성자를 통해 대입 함.
-        ships = new ShipData[lines.Length - 2];
+        ships = new ShipData[lines.Length - 2];                 //여기 있는 ships 배열이 메뉴아이템의 데이터임.for문 돌면서 완성됨.
         for(int i = 1;i< lines.Length-1; i++)
         {
             string[] rows = lines[i].Split("\t");
@@ -48,18 +48,20 @@ public class GameDataScript : MonoBehaviour
             float base_dmg = float.Parse(rows[1]);
             string name = rows[2];
             string kName = rows[3];
+            float unlockCoin = float.Parse(rows[4]);
             //PlayerPrefs.GetInt-로컬저장소에 저장,두 번째 매개변수는 해당 키로 저장된 값이 없을 경우 반환할 기본 값           
-            int chr_level = PlayerPrefs.GetInt("Chr_Level" + i.ToString(), 1);
-            int locked;
+            int chr_level = PlayerPrefs.GetInt("Chr_Level" + (i - 1).ToString(), 1);
+            int locked;     //locked 선택 창 해금할지 말지 하는 변수, 0이면 해금.
             if (i == 1)
             {
                 locked = 0;
             }
             else
             {
-                locked=PlayerPrefs.GetInt("Chr_Locked"+i.ToString(), 1);
+                locked=PlayerPrefs.GetInt("Chr_Locked"+(i-1).ToString(), 1);
             }
-            ships[i-1] =new ShipData(id,base_dmg, name, kName, chr_level, locked);
+            //for문 안에서 지정된 세팅을 ship[i-1]에 지정.
+            ships[i-1] =new ShipData(id,base_dmg, name, kName,unlockCoin, chr_level, locked);
             ships[i - 1].SetDamage();
         }
     }
@@ -73,5 +75,35 @@ public class GameDataScript : MonoBehaviour
         //PlayerPrefs.SetFloat-로컬저장소에서 불어옴
         this.coin += coin;
         PlayerPrefs.SetFloat("TotalCoin", this.coin);
+        MenuManager.Instance.coinImage.gameObject.SetActive(true);
+        MenuManager.Instance.coinText.gameObject.SetActive(true);
+
+    }
+    //11-7
+    public bool CanUnlock(int id)
+    {
+        if (GetCoin() > ships[id].unlockCoin)
+        {
+            if (ships[id].GetLock() == 1)
+            {
+                return true;
+            }
+            else
+            {
+                print("코인은 있지만 락이 해제됨");
+                return false;
+            }
+        }
+        else
+        {
+            print("코인이 없음");
+            return false;
+        }
+    }
+
+    public void ExcuteUnlock(int id)
+    {
+        AddCoin(-ships[id].unlockCoin);
+        ships[id].SetLock(0);
     }
 }
