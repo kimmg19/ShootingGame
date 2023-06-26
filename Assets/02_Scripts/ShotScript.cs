@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Assets/04_Prefabs/PlayerShot.prefab
-public class ShotScript : MonoBehaviour
-{
+public class ShotScript : MonoBehaviour {
     public float speed = 10;
     public GameObject shotEffect;
     public GameObject coin;        //Coin 프리팹 연결
     public GameObject explosion;
     public float dmg;
-    void Update()
-    {
+    void Update() {
         //발사체 이동
         transform.Translate(Vector3.right * speed * Time.deltaTime);
     }
 
     //발사체에서 충돌검사
-    private void OnTriggerEnter2D(Collider2D collision) 
-    {
-         //collision.tag-발사체와 충돌된 물체 tag 가져옴.
-        if (collision.gameObject.tag == "Asteroid")
-        { 
+    private void OnTriggerEnter2D(Collider2D collision) {
+        //collision.tag-발사체와 충돌된 물체 tag 가져옴.
+        if (collision.gameObject.tag == "Asteroid") {
             //AsteroidScrpit에서 hp 값 가져오기
-            AsteroidScript asteroidScript=collision.gameObject.GetComponent<AsteroidScript>();
+            AsteroidScript asteroidScript = collision.gameObject.GetComponent<AsteroidScript>();
             asteroidScript.hp -= dmg;
 
             //발사체가 소행성에 적중시 적중효과 shotEfffect 생성.
@@ -33,8 +29,7 @@ public class ShotScript : MonoBehaviour
             shotEffectObj.transform.rotation = Quaternion.identity;
             ShotEffectScript shotEffectScript = shotEffectObj.GetComponent<ShotEffectScript>();
             shotEffectScript.InitTime();
-            if (asteroidScript.hp <= 0)
-            {
+            if (asteroidScript.hp <= 0) {
                 //소행성 발사체로 파괴시 exlosion 생성.
                 //Instantiate(explosion,transform.position,Quaternion.identity) ;
                 GameObject explosionObj = ObjectPoolManager.instance.explosion.Create();
@@ -59,8 +54,7 @@ public class ShotScript : MonoBehaviour
             //Destroy(gameObject);
             ObjectPoolManager.instance.playerShot.Destroy(gameObject);
 
-        }else if (collision.gameObject.tag == "Enemy")
-        {
+        } else if (collision.gameObject.tag == "Enemy") {
             //EnemyScript에서 hp 값 가져오기
             EnemyScript enemyScript = collision.gameObject.GetComponent<EnemyScript>();
             enemyScript.hp -= dmg;
@@ -69,11 +63,10 @@ public class ShotScript : MonoBehaviour
             //Instantiate(shotEffect, transform.position, Quaternion.identity);
             GameObject shotEffectObj = ObjectPoolManager.instance.shotEffect.Create();
             shotEffectObj.transform.position = transform.position;
-            shotEffectObj.transform.rotation= Quaternion.identity;
-            ShotEffectScript shotEffectScript=shotEffectObj.GetComponent<ShotEffectScript>();
+            shotEffectObj.transform.rotation = Quaternion.identity;
+            ShotEffectScript shotEffectScript = shotEffectObj.GetComponent<ShotEffectScript>();
             shotEffectScript.InitTime();
-            if (enemyScript.hp <= 0)
-            {
+            if (enemyScript.hp <= 0) {
                 //발사체로 적 파괴시 exlosion 생성.
                 //Instantiate(explosion, transform.position, Quaternion.identity);
                 GameObject explosionObj = ObjectPoolManager.instance.explosion.Create();
@@ -85,7 +78,7 @@ public class ShotScript : MonoBehaviour
                     Random.Range(-0.1f, 0.1f), 0);
 
                 //적 파괴시 coin 생성
-                
+
                 GameObject coinObj = ObjectPoolManager.instance.coin.Create();
                 coinObj.transform.position = transform.position + randomPos;
                 coinObj.transform.rotation = Quaternion.identity;
@@ -98,10 +91,46 @@ public class ShotScript : MonoBehaviour
             //발사체가 적에 적중시 발사체 제거
             //Destroy(gameObject);
             ObjectPoolManager.instance.playerShot.Destroy(gameObject);
+        } else if (collision.gameObject.tag == "Boss") {
+            //EnemyScript에서 hp 값 가져오기
+            BossScript bossScript = collision.gameObject.GetComponent<BossScript>();
+            bossScript.hp -= dmg;
+
+            //발사체가 적에 적중시 적중효과 shotEfffect 생성.
+            //Instantiate(shotEffect, transform.position, Quaternion.identity);
+            GameObject shotEffectObj = ObjectPoolManager.instance.shotEffect.Create();
+            shotEffectObj.transform.position = transform.position;
+            shotEffectObj.transform.rotation = Quaternion.identity;
+            ShotEffectScript shotEffectScript = shotEffectObj.GetComponent<ShotEffectScript>();
+            shotEffectScript.InitTime();
+            if (bossScript.hp <= 0) {
+                //발사체로 적 파괴시 exlosion 생성.
+                //Instantiate(explosion, transform.position, Quaternion.identity);
+                GameObject explosionObj = ObjectPoolManager.instance.explosion.Create();
+                explosionObj.transform.position = transform.position;
+                explosionObj.transform.rotation = Quaternion.identity;
+                ExplosionScript explosionScript = explosionObj.GetComponent<ExplosionScript>();
+                explosionScript.InitTime();
+                Vector3 randomPos = new Vector3(Random.Range(-0.1f, 0.1f),
+                    Random.Range(-0.1f, 0.1f), 0);
+
+                //적 파괴시 coin 생성
+
+                GameObject coinObj = ObjectPoolManager.instance.coin.Create();
+                coinObj.transform.position = transform.position + randomPos;
+                coinObj.transform.rotation = Quaternion.identity;
+                coinObj.GetComponent<CoinScript>().coinSize = bossScript.coin;
+
+                //hp<=0일 때 적 제거
+                //Destroy(collision.gameObject);  
+                bossScript.DestroyGameObject();
+            }
+            //발사체가 적에 적중시 발사체 제거
+            //Destroy(gameObject);
+            ObjectPoolManager.instance.playerShot.Destroy(gameObject);
         }
     }
-    public void DestroyGameObject()
-    {
+    public void DestroyGameObject() {
         ObjectPoolManager.instance.playerShot.Destroy(gameObject);
     }
     //화면 밖으로 벗어나면 삭제, SetActive(false) 경우에도 실행됨

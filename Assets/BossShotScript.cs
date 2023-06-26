@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Assets/04_Prefabs/EnemyShot.prefab
-public class EnemyShotScript : MonoBehaviour {
+public class BossShotScript : MonoBehaviour
+{
     public float speed = 4;
 
     void Update() {
@@ -11,6 +11,6 @@ public class EnemyShotScript : MonoBehaviour {
     }
 
     public void DestroyGameObject() {
-        ObjectPoolManager.instance.enemyShot.Destroy(gameObject);
+        ObjectPoolManager.instance.bossShot.Destroy(gameObject);
     }
 }

@@ -4,9 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Game;
 
-public class PopupScript : MonoBehaviour
-{
-    
+public class PopupScript : MonoBehaviour {
+
     private event Onclick onYesClick;
     private event Onclick onNoClick;
     public Button yesButton;
@@ -15,29 +14,24 @@ public class PopupScript : MonoBehaviour
     public Text detailText;
 
 
-    public void SetYesListener(Onclick onClick)
-    {
+    public void SetYesListener(Onclick onClick) {
         this.onYesClick += onClick;
     }
 
-    public void SetNoListener(Onclick onClick)
-    {
+    public void SetNoListener(Onclick onClick) {
         this.onNoClick += onClick;
     }
-    void PopupYesAction()
-    {
+    void PopupYesAction() {
         onYesClick();
         Destroy(gameObject);
     }
 
-    void PopupNoAction()
-    {
+    void PopupNoAction() {
         onNoClick();
         Destroy(gameObject);
     }
 
-    private void Start()
-    {
+    private void Start() {
         yesButton.onClick.AddListener(PopupYesAction);
         noButton.onClick.AddListener(PopupNoAction);
 

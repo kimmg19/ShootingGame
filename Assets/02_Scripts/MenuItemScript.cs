@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //11-4.MenuScene/Canvas/Panel/Scroll View/Viewport/Content/MenuItem
-public class MenuItemScript : MonoBehaviour
-{
+public class MenuItemScript : MonoBehaviour {
     //유니티에서 UI와 연결됨.
     public Button unlockButton;
     public Text unlockCoinText;
@@ -20,77 +19,61 @@ public class MenuItemScript : MonoBehaviour
     public GameObject popupObj;
     public Text upgradeCoinText;
     //11-5 UI 적용 함수
-    public void SetUI(string shipName,string shipLevel,
-        string shipdmg,string shipNextDmg,int locked,float unlockCoin,
-        float upgradeCoin)
-    {
+    public void SetUI(string shipName, string shipLevel,
+        string shipdmg, string shipNextDmg, int locked, float unlockCoin,
+        float upgradeCoin) {
         this.shipNameText.text = shipName;
         this.levelText.text = shipLevel;
         this.dmgText.text = shipdmg;
         this.nextDmgText.text = shipNextDmg.ToString();
-        unlockCoinText.text=unlockCoin.ToString();
-        upgradeCoinText.text=upgradeCoin.ToString()+"Coins";
-        if (locked == 1)
-        {
+        unlockCoinText.text = unlockCoin.ToString();
+        upgradeCoinText.text = upgradeCoin.ToString() + "Coins";
+        if (locked == 1) {
             unlockButton.gameObject.SetActive(true);//잠김
             unlockCoinText.gameObject.SetActive(true);
-        }
-        else
-        {
+        } else {
             unlockButton.gameObject.SetActive(false);//풀림
             unlockCoinText.gameObject.SetActive(false);
         }
     }
 
-    public void UnlockAction()
-    {
+    public void UnlockAction() {
         print("UnlockAction");
-        if (GameDataScript.instance.CanUnlock(id))
-        {
+        if (GameDataScript.instance.CanUnlock(id)) {
             //12-16
             Util.CreatePopup("구매", GameDataScript.instance.ships[id].kName + "을(를) 구매하시겠습니까?",
                 ItemYesAction, ItemNoAction);
-        }
-        else
-        {
+        } else {
             Util.CreatePopup("확인", "코인이 부족합니다.", CoinLackAction);
         }
     }
-    public void CoinLackAction()
-    {
+    public void CoinLackAction() {
 
     }
-    public void ItemYesAction()
-    {
+    public void ItemYesAction() {
         GameDataScript.instance.ExcuteUnlock(id);
         unlockButton.gameObject.SetActive(false);
         unlockCoinText.gameObject.SetActive(false);
         MenuManager.Instance.coinText.text = GameDataScript.instance.GetCoin().ToString();
     }
 
-    public  void ItemNoAction()
-    {
+    public void ItemNoAction() {
 
     }
-    public void PowerUpAction()
-    {
+    public void PowerUpAction() {
         print("PowerUpAction");
-        if(GameDataScript.instance.CanUpgrade(id))
-        {
+        if (GameDataScript.instance.CanUpgrade(id)) {
             GameDataScript.instance.UpgradeAction(id);
             ShipData ship = GameDataScript.instance.ships[id];
             SetUI(ship.name, ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString(), ship.locked,
                 ship.unlockCoin, ship.upgradeCoin);
-            MenuManager.Instance.coinText.text=
+            MenuManager.Instance.coinText.text =
                 GameDataScript.instance.GetCoin().ToString();
-        }
-        else
-        {
+        } else {
             Util.CreatePopup("확인", "코인이 부족합니다.", PowerUpUpgradeCoinLackAction);
         }
     }
-    public void PowerUpUpgradeCoinLackAction()
-    {
+    public void PowerUpUpgradeCoinLackAction() {
 
     }
 }

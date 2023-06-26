@@ -4,12 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //ÀÌ¿ë ¾ÈµÊ.
-public class CanvasScript : MonoBehaviour
-{ 
+public class CanvasScript : MonoBehaviour {
     public Text myText;
-    void Start()
-    {
-        print("Width"+Screen.width);
+    void Start() {
+        print("Width" + Screen.width);
         print("height" + Screen.height);
         print(Camera.main.ViewportToScreenPoint(new Vector3(0, 0, 0)));
         print(Camera.main.ViewportToScreenPoint(new Vector3(1, 1, 0)));
@@ -17,8 +15,7 @@ public class CanvasScript : MonoBehaviour
         myText.GetComponent<RectTransform>().position = pos;
     }
 
-    void Update()
-    {
+    void Update() {
         myText.GetComponent<RectTransform>().position = Input.mousePosition;
     }
 }
