@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour
 {
     public int type;
-    public int hp;
+    public float hp;
     public float speed;         //적 이동속도
     public float coin;
     public float time;
@@ -26,7 +26,7 @@ public class EnemyScript : MonoBehaviour
                 hp = 20; speed = 1.3f; coin = 4; maxShotTime = 2; shotSpeed = 4;
                 break;
             case 2:
-                hp = 40; speed = 1.2f; coin = 5; maxShotTime = 1.3f; shotSpeed = 5;
+                hp = 50; speed = 1.2f; coin = 5; maxShotTime = 1f; shotSpeed = 5;
                 break;
         }
     }
@@ -36,18 +36,22 @@ public class EnemyScript : MonoBehaviour
         time += Time.deltaTime;
         if (time > maxShotTime)
         {
-            
+
             //적 발사체 생성,오브젝트 받아서->오브젝트의 스크립트받아서->스크립트의 speed 선언
-            GameObject shotObj = Instantiate(enemyShot,transform.position, Quaternion.identity);
+            //GameObject shotObj = Instantiate(enemyShot,transform.position, Quaternion.identity);
+            GameObject shotObj = ObjectPoolManager.instance.enemyShot.Create();
+            shotObj.transform.position = transform.position;
+            shotObj.transform.rotation = Quaternion.identity;
             //적 발사체 속도 지정
             shotObj.GetComponent<EnemyShotScript>().speed = shotSpeed;            
             time = 0;
         }
         transform.Translate(Vector3.left * speed * Time.deltaTime);     //적 이동
-    }
-
-    private void OnBecameInvisible()
+    }    
+    public void DestroyGameObject()
     {
-        Destroy(gameObject);
+        GameManager.instance.remainEnemy--;
+        //Destroy(gameObject);
+        ObjectPoolManager.instance.enemies[type].Destroy(gameObject);
     }
 }
