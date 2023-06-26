@@ -1,6 +1,8 @@
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -32,6 +34,7 @@ namespace Game
             popupScript.SetYesListener(yesAction);
         }
     }//여까지
+
     public struct ShipData
     {
         public int id; public float base_dmg; public string name;
@@ -41,20 +44,23 @@ namespace Game
         public float dmg;
         public float nextDmg;
         public float unlockCoin;
+        public float upgradeCoin;
+        public float base_upgradecoin;
         public ShipData(int id, float base_dmg, string name, string kName,
-            float unlockCoin,
-            int chr_level = 1,int locked = 1, float dmg = 1,float nextDmg=1)
+            float unlockCoin,float base_upgradecoin,
+            int chr_level = 1,int locked = 1, float dmg = 1,float nextDmg=1,float upgradeCoin=100)
         {
             this.id = id;
             this.base_dmg = base_dmg;
             this.name = name;
             this.kName = kName;
             this.unlockCoin = unlockCoin;
+            this.base_upgradecoin = base_upgradecoin;
             this.chr_level = chr_level;
             this.locked = locked;
             this.dmg = dmg;
             this.nextDmg = nextDmg;
-            
+            this.upgradeCoin = upgradeCoin;
         }
         //11-6
         public string GetImageName()
@@ -67,12 +73,15 @@ namespace Game
             this.dmg = chr_level * base_dmg;
             this.nextDmg = (chr_level + 1) * base_dmg;
         }
-
+        public void SetUpgradeCoin()
+        {
+            this.upgradeCoin = chr_level * base_upgradecoin;
+        }
         public void show()
         {
             Debug.Log("id: " + id + " base_dmg: " + base_dmg + " name: " + name +
                 " kName: " + kName+"unlockCoin: "+unlockCoin+" chr_level: "+chr_level+" locked: "+locked 
-                +" dmg: "+dmg);
+                +" dmg: "+dmg + " base_upgradecoin: " + base_upgradecoin + " upgradeCoin: " + upgradeCoin);
         }
         public void SetLock(int locked)
         {
@@ -94,6 +103,31 @@ namespace Game
                 return this.locked;
             }
             
+        }
+        public void AddChrLevel()
+        {
+            chr_level++;
+            PlayerPrefs.SetInt("Chr_Level" + id.ToString(), chr_level);
+            SetDamage();
+            SetUpgradeCoin();
+        }
+    }
+    //아래 내용이 유니티 인스펙터 뷰에서 보인다.
+    [System.Serializable]
+     public struct EnemyWave
+    {
+        public int stage;
+        public int type;
+        public float time;
+        public EnemyWave(int stage, int type, float time)
+        {
+            this.stage = stage;
+            this.type = type;
+            this.time = time;
+        }
+        public void Show()
+        {
+            Debug.Log("stage : " + stage + "type : " + type + "time : " + time);
         }
     }
 }

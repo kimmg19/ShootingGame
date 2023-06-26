@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3070034048967078601}
   - component: {fileID: 5977588702085170071}
   - component: {fileID: 8959541381155194131}
-  - component: {fileID: 7268954252942662330}
+  - component: {fileID: 329722659926920696}
   m_Layer: 0
   m_Name: shotEffect
   m_TagString: Untagged
@@ -107,7 +107,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &7268954252942662330
+--- !u!114 &329722659926920696
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,6 +116,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6126514394509669219}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f67c1ad71acec740b50cc6484ef9b7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 0297c9f95b9a3c148800e87d57288d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

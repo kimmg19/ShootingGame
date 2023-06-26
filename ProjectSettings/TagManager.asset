@@ -8,6 +8,7 @@ TagManager:
   - Asteroid
   - Item
   - EnemyShot
+  - PlayerShot
   layers:
   - Default
   - TransparentFX
@@ -22,8 +23,8 @@ TagManager:
   - Enemy
   - Item
   - EnemyShot
-  - 
-  - 
+  - LeftBoundary
+  - RightBoundary
   - 
   - 
   - 

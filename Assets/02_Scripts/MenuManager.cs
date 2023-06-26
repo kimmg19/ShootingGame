@@ -31,7 +31,7 @@ public class MenuManager : MonoBehaviour
             MenuItemScript curItem= obj.GetComponent<MenuItemScript>();
             //아이템(선택 창)의 UI적용
             curItem.SetUI(ship.name, ship.chr_level.ToString(), ship.dmg.ToString(), ship.nextDmg.ToString(),ship.locked,
-                ship.unlockCoin);
+                ship.unlockCoin,ship.upgradeCoin);
             curItem.id = ship.id;       //MenuItemScript의 id 를 여기서 바꿈.0~2
             obj.name=i.ToString();
             obj.transform.SetParent(content.transform,false);
@@ -67,7 +67,7 @@ public class MenuManager : MonoBehaviour
     }
     public void AddTestCoin()
     {
-        GameDataScript.instance.AddCoin(10000);
+        GameDataScript.instance.AddCoinInMenu(10000);
         coinText.text = GameDataScript.instance.GetCoin().ToString();
     }
     public void ClearPrefAction()

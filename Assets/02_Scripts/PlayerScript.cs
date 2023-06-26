@@ -1,3 +1,4 @@
+using Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -8,21 +9,28 @@ public class PlayerScript : MonoBehaviour
 {
     public GameObject shot;
     public GameObject explosion;
-    public Transform shotPointTr;
+    public Transform shotPointTr;    
     float speed = 5;
     Vector3 min, max;
     Vector2 colSize;
     Vector2 chrSize;
+    public float dmg;
+    public SpriteRenderer spr;
     void Start()
     {
-          
+        
         //카메라 왼쪽 아래 구석
         min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
         //카메라 오른쪽 위 구석
         max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
         colSize =GetComponent<BoxCollider2D>().size;
         //캐릭터 콜라이더의 사이즈 /2의 값
-        chrSize = new Vector2(colSize.x/2,colSize.y/2);   
+        chrSize = new Vector2(colSize.x/2,colSize.y/2);
+        int select = GameDataScript.instance.select;
+        ShipData shipData = GameDataScript.instance.ships[select];
+        dmg=shipData.dmg;
+        spr = GetComponent<SpriteRenderer>();
+        spr.sprite = Resources.Load<Sprite>(shipData.GetImageName());
     }
 
 
@@ -67,7 +75,13 @@ public class PlayerScript : MonoBehaviour
                     transform.position.y - 0.17f, transform.position.z);
 
                 //발사체 생성,3번째거는 물체 회전 담당
-                Instantiate(shot, vec, Quaternion.identity);
+                //GameObject shotObj= Instantiate(shot, vec, Quaternion.identity);
+                GameObject shotObj=ObjectPoolManager.instance.playerShot.Create();
+                shotObj.transform.position = vec;
+                shotObj.transform.rotation = Quaternion.identity;
+
+                ShotScript shotScript=shotObj.GetComponent<ShotScript>();
+                shotScript.dmg = dmg;
                 shotDelay = 0;
             }
         }        
@@ -83,18 +97,39 @@ public class PlayerScript : MonoBehaviour
 
             GameManager.instance.coinInGame += coinScript.coinSize;
             GameDataScript.instance.AddCoin(coinScript.coinSize);
-            print("Coin: "+GameManager.instance.coinInGame);
-            GameManager.instance.coinText.text = GameDataScript.instance.GetCoin().ToString();            
+            GameManager.instance.coinText.text = GameDataScript.instance.GetCoin().ToString();
+            //Destroy(collision.gameObject);            
+            coinScript.DestroyGameObject();
 
-            Destroy(collision.gameObject);
-
-        }else if (collision.gameObject.tag =="Asteroid"||
-            collision.gameObject.tag =="Enemy"||
-            collision.gameObject.tag == "EnemyShot") 
+        }
+        else if (collision.gameObject.tag =="Asteroid") 
         {
-            Destroy(collision.gameObject);
+            //Destroy(collision.gameObject);
+            ObjectPoolManager.instance.asteroid.Destroy(collision.gameObject);
             Destroy(gameObject);
             Instantiate(explosion,transform.position,Quaternion.identity);
+            GameManager.instance.RetryPanelSetActiveAfter1sec();
+            GameManager.instance.isAlive = false; //플레이어 사망 처리
+        }
+        else if (collision.gameObject.tag == "Enemy" )
+        {
+            //Destroy(collision.gameObject);
+            EnemyScript enemyScript=collision.GetComponent<EnemyScript>();
+            enemyScript.DestroyGameObject();
+            Destroy(gameObject);
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            GameManager.instance.RetryPanelSetActiveAfter1sec();
+            GameManager.instance.isAlive = false; //플레이어 사망 처리
+        }
+        else if (collision.gameObject.tag =="EnemyShot")
+        {
+            //Destroy(collision.gameObject);
+            EnemyShotScript enemyShotScript = collision.GetComponent<EnemyShotScript>();
+            enemyShotScript.DestroyGameObject();
+            Destroy(gameObject);
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            GameManager.instance.RetryPanelSetActiveAfter1sec();
+            GameManager.instance.isAlive = false; //플레이어 사망 처리
         }
     }
 

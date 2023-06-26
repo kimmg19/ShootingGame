@@ -12,8 +12,8 @@ public class CoinScript : MonoBehaviour
         transform.position += Vector3.left * Time.deltaTime * speed;
     }
 
-    private void OnBecameInvisible()
+    public void DestroyGameObject()
     {
-        Destroy(gameObject);
+        ObjectPoolManager.instance.coin.Destroy(gameObject);
     }
 }
