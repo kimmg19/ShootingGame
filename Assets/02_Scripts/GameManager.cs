@@ -7,6 +7,7 @@ using Game;
 using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour {
+    public GameObject bossObj;
     public List<GameObject> enemyWavePrefabs;
     public List<EnemyWave> enemyWaves;
     public int spawnIndex = 0;
@@ -36,6 +37,8 @@ public class GameManager : MonoBehaviour {
     public bool stageClear = false;
     public int stageInGame;
     public bool isAlive = true;     //플레이어 살아있나
+    public bool bossStage = false;
+    public bool bossSpawn = false;
     private void Awake() {
         instance = this;
     }
@@ -50,10 +53,10 @@ public class GameManager : MonoBehaviour {
         mainMenuRetryButton.onClick.AddListener(MainMenuInRetryAction);
         adButton.onClick.AddListener(AdAction);
         nextStageButton.onClick.AddListener(NextStageInClearAction);
-        enemyWaves=GameDataScript.instance.GetStageWave(stageInGame);
-        for(int i=0; i<enemyWaves.Count; i++) {
-            enemyWaves[i].Show();
-        }
+        enemyWaves = GameDataScript.instance.GetStageWave(stageInGame);
+        //for (int i = 0; i < enemyWaves.Count; i++) {
+        //    enemyWaves[i].Show();
+        //}
         /*enemyWaves = new List<EnemyWave>();
         enemyWaves.Add(new EnemyWave(0, 0, 2));
         enemyWaves.Add(new EnemyWave(1, 1, 3));
@@ -64,7 +67,14 @@ public class GameManager : MonoBehaviour {
         spawnIndex = 0;
         spawnTime = 0;
 
-        SpawnEnemyWave();
+        bossStage = false;
+        bossSpawn = false;
+        if(stageInGame%5==0) {
+            bossStage = true;
+        } else {
+            SpawnEnemyWave();
+        }
+        
     }
     public float asteroidTime = 0;
     public float asteroidSpawnTime = 3;
@@ -73,7 +83,23 @@ public class GameManager : MonoBehaviour {
         time += Time.deltaTime;
         asteroidTime += Time.deltaTime;
         if (time > spawnTime) {
-            if (spawnIndex < enemyWaves.Count) {
+            if (bossStage == true) {
+                if(bossSpawn == false) {
+                    remainEnemy++;
+                    GameObject boss=Instantiate(bossObj,
+                        new Vector3(10,0,0), Quaternion.identity);
+                    BossScript bossScript= boss.GetComponent<BossScript>();
+                    float hp = GameDataScript.instance.GetBossHp(stageInGame);
+                    float coin = GameDataScript.instance.GetBossCoin(stageInGame);
+                    bossScript.Init(hp, coin);
+                    bossSpawn = true;
+                }
+                if (remainEnemy <= 0 && stageClear == false && isAlive == true) {
+                    stageClear = true;
+                    ClearPanelActiveAfter1sec();
+                }
+            }
+            else if (spawnIndex < enemyWaves.Count) {
                 SpawnEnemyWave();
             } else {
                 if (remainEnemy <= 0 && stageClear == false && isAlive == true) {
@@ -86,6 +112,10 @@ public class GameManager : MonoBehaviour {
             GameObject obj = ObjectPoolManager.instance.asteroid.Create();
             obj.transform.position = vec;
             obj.transform.rotation = Quaternion.identity;
+            AsteroidScript asteroidScript = obj.GetComponent<AsteroidScript>();
+            float hp = GameDataScript.instance.GetAsteroidHp(stageInGame);
+            float coin = GameDataScript.instance.GetAsteroidCoin(stageInGame);
+            asteroidScript.Init(hp,coin);
             asteroidTime = 0;
         }
         //2초에 한번씩 소행성,적 생성
@@ -138,6 +168,11 @@ public class GameManager : MonoBehaviour {
             GameObject enemyObj = ObjectPoolManager.instance.enemies[enemyType].Create();
             enemyObj.transform.position = tr.position + vec;
             enemyObj.transform.rotation = Quaternion.identity;
+            EnemyScript enemyScript=enemyObj.GetComponent<EnemyScript>();
+            Enemy enemy=GameDataScript.instance.enemies[enemyType];
+            float cur_hp=GameDataScript.instance.GetEnemyHp(enemy.hp, stageInGame);
+            float cur_coin = GameDataScript.instance.GetEnemyCoin(enemy.coin, stageInGame);
+            enemyScript.Init(enemyType,enemy.name,cur_hp,enemy.speed,enemy.maxShotTime,enemy.shotSpeed, cur_coin);
         }
         remainEnemy += count;
         spawnIndex++;

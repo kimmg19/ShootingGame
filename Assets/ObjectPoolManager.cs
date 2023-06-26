@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPoolManager : MonoBehaviour
-{
+public class ObjectPoolManager : MonoBehaviour {
     public static ObjectPoolManager instance;
     public GameObject playerShotPrefab;
     public GameObject asteroidPrefab;
@@ -12,6 +11,7 @@ public class ObjectPoolManager : MonoBehaviour
     public GameObject coinPrefab;
     public GameObject shotEffectPrefab;
     public GameObject explosionPrefab;
+    public GameObject bossShotPrefab;
 
     public ObjectPool playerShot;
     public ObjectPool asteroid;
@@ -20,58 +20,51 @@ public class ObjectPoolManager : MonoBehaviour
     public ObjectPool coin;
     public ObjectPool shotEffect;
     public ObjectPool explosion;
+    public ObjectPool bossShot;
 
-    public class ObjectPool
-    {
+    public class ObjectPool {
         List<GameObject> list;
         public GameObject prefab;
-        public ObjectPool(GameObject prefab)
-        {
+        public ObjectPool(GameObject prefab) {
             this.prefab = prefab;
-            list= new List<GameObject>();
+            list = new List<GameObject>();
         }
-        public GameObject Create()
-        {
-            if (list.Count > 0)
-            {
+        public GameObject Create() {
+            if (list.Count > 0) {
                 GameObject obj = list[0];
                 obj.SetActive(true);
                 list.Remove(obj);
                 return obj;
-            }
-            else
-            {
-                GameObject obj=Instantiate(prefab);
+            } else {
+                GameObject obj = Instantiate(prefab);
                 obj.SetActive(true);
                 return obj;
             }
         }
-        public void Destroy(GameObject obj)
-        {
+        public void Destroy(GameObject obj) {
             obj.SetActive(false);
             list.Add(obj);
         }
     }
-    private void Awake()
-    {
-        instance= this;
+    private void Awake() {
+        instance = this;
     }
-    void Start()
-    {
+    void Start() {
         playerShot = new ObjectPool(playerShotPrefab);
-        asteroid=new ObjectPool(asteroidPrefab);
-        enemies=new List<ObjectPool>();
-        for(int i=0;i<enemyPrefab.Count;i++) { 
-            ObjectPool pool=new ObjectPool(enemyPrefab[i]);
+        asteroid = new ObjectPool(asteroidPrefab);
+        enemies = new List<ObjectPool>();
+        for (int i = 0; i < enemyPrefab.Count; i++) {
+            ObjectPool pool = new ObjectPool(enemyPrefab[i]);
             enemies.Add(pool);
         }
-        enemyShot=new ObjectPool(enemyShotPrefab);
-        coin=new ObjectPool(coinPrefab);
+        enemyShot = new ObjectPool(enemyShotPrefab);
+        coin = new ObjectPool(coinPrefab);
+        shotEffect=new ObjectPool(shotEffectPrefab);
         explosion = new ObjectPool(explosionPrefab);
+        bossShot = new ObjectPool(bossShotPrefab);
     }
 
-    void Update()
-    {
-        
+    void Update() {
+
     }
 }
