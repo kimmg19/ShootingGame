@@ -1,21 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.U2D.Sprites;
+using Game;
 using UnityEngine;
 
 public class EnemyScript : MonoBehaviour {
+    public Transform hpTransform;
     public int type;
-    public float hp;
+    public double hp;
     public float speed;         //적 이동속도
-    public float coin;
+    public double coin;
     public float time;
     public GameObject enemyShot;
     public float maxShotTime;       //적 발사체의 빈도 수
     public float shotSpeed;         //적 발사체의 속도
     public string enemyName;
-    public void Init(int type,string name, float hp, float speed, float maxShotTime,
-        float shotSpeed, float coin) {
+    public double maxHp;
+    Vector3 hpTargetScale;
+
+    float destroyTime = 0;
+    bool destroyFlag = false;
+    float destroyMaxTime = 0.3f;
+
+    public void Init(int type,string name, double hp, float speed, float maxShotTime,
+        float shotSpeed, double coin) {
         this.type = type;
         this.enemyName = name;
         this.hp = hp;
@@ -23,21 +28,17 @@ public class EnemyScript : MonoBehaviour {
         this.maxShotTime = maxShotTime;
         this.shotSpeed = shotSpeed;
         this.coin = coin;
+        maxHp = hp;
+        hpTargetScale = new Vector3(1, 1, 1);
+        destroyTime = 0;
+        destroyFlag = false;
+        Collider2D col = GetComponent<Collider2D>();
+        col.enabled = true;
+
     }
-    //void Start() {
-    //    //type은 유니티에서 불러옴.
-    //    switch (type) {
-    //        case 0:
-    //            hp = 10; speed = 1.4f; coin = 3; maxShotTime = 3; shotSpeed = 3;
-    //            break;
-    //        case 1:
-    //            hp = 20; speed = 1.3f; coin = 4; maxShotTime = 2; shotSpeed = 4;
-    //            break;
-    //        case 2:
-    //            hp = 50; speed = 1.2f; coin = 5; maxShotTime = 1f; shotSpeed = 5;
-    //            break;
-    //    }
-    //}
+    void Awake() {
+        maxHp = hp;
+    }
 
     void Update() {
         time += Time.deltaTime;
@@ -53,10 +54,52 @@ public class EnemyScript : MonoBehaviour {
             time = 0;
         }
         transform.Translate(Vector3.left * speed * Time.deltaTime);     //적 이동
+        if (hp < 0) {
+            hp = 0;
+        }
+        double result = hp / maxHp;
+        hpTargetScale = new  Vector3((float)result, 1, 1);
+        hpTransform.localScale = Vector3.Lerp(hpTransform.localScale, hpTargetScale, Time.deltaTime * 3);
+        if (destroyFlag == true) {
+            destroyTime += Time.deltaTime;
+            if (destroyTime > destroyMaxTime) {
+                destroyFlag = false;
+                ObjectPoolManager.instance.enemies[type].Destroy(gameObject);
+                //발사체로 적 파괴시 exlosion 생성.
+                //Instantiate(explosion, transform.position, Quaternion.identity);
+                GameObject explosionObj = ObjectPoolManager.instance.explosion.Create();
+                explosionObj.transform.position = transform.position;
+                explosionObj.transform.rotation = Quaternion.identity;
+                ExplosionScript explosionScript = explosionObj.GetComponent<ExplosionScript>();
+                explosionScript.InitTime();
+
+                string str = Util.GetBigNumber(maxHp);
+                GameManager.instance.CreateFloatingText(str, transform.position);
+
+                Vector3 randomPos = new Vector3(Random.Range(-0.1f, 0.1f),
+                    Random.Range(-0.1f, 0.1f), 0);
+
+                //적 파괴시 coin 생성
+
+                GameObject coinObj = ObjectPoolManager.instance.coin.Create();
+                coinObj.transform.position = transform.position + randomPos;
+                coinObj.transform.rotation = Quaternion.identity;
+                coinObj.GetComponent<CoinScript>().coinSize = coin;
+
+                //hp<=0일 때 적 제거
+                //Destroy(collision.gameObject);  
+                AudioManagerScript.instance.PlaySound(Sound.Explosion);
+            }
+        }
     }
-    public void DestroyGameObject() {
-        GameManager.instance.remainEnemy--;
-        //Destroy(gameObject);
-        ObjectPoolManager.instance.enemies[type].Destroy(gameObject);
+    public void DestroyGameObject(int type=0) {
+        if(type==0) {
+            ObjectPoolManager.instance.enemies[type].Destroy(gameObject);
+        } else {
+            GameManager.instance.remainEnemy--;
+            destroyFlag = true;
+            Collider2D col = GetComponent<Collider2D>();
+            col.enabled = false;
+        }        
     }
 }

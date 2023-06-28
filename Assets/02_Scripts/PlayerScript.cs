@@ -13,7 +13,7 @@ public class PlayerScript : MonoBehaviour {
     Vector3 min, max;
     Vector2 colSize;
     Vector2 chrSize;
-    public float dmg;
+    public double dmg;
     public SpriteRenderer spr;
     void Start() {
 
@@ -76,6 +76,7 @@ public class PlayerScript : MonoBehaviour {
                 ShotScript shotScript = shotObj.GetComponent<ShotScript>();
                 shotScript.dmg = dmg;
                 shotDelay = 0;
+                AudioManagerScript.instance.PlaySound(Sound.PlayerShot);
             }
         }
     }
@@ -92,6 +93,8 @@ public class PlayerScript : MonoBehaviour {
             GameManager.instance.coinText.text = GameDataScript.instance.GetCoin().ToString();
             //Destroy(collision.gameObject);            
             coinScript.DestroyGameObject();
+            AudioManagerScript.instance.PlaySound(Sound.Coin);
+
 
         } else if (collision.gameObject.tag == "Asteroid") {
             //Destroy(collision.gameObject);
@@ -100,6 +103,8 @@ public class PlayerScript : MonoBehaviour {
             Instantiate(explosion, transform.position, Quaternion.identity);
             GameManager.instance.RetryPanelSetActiveAfter1sec();
             GameManager.instance.isAlive = false;
+            AudioManagerScript.instance.PlaySound(Sound.Explosion);
+
 
         } else if (collision.gameObject.tag == "Enemy") {
             //Destroy(collision.gameObject);
@@ -109,6 +114,8 @@ public class PlayerScript : MonoBehaviour {
             Instantiate(explosion, transform.position, Quaternion.identity);
             GameManager.instance.RetryPanelSetActiveAfter1sec();
             GameManager.instance.isAlive = false;
+            AudioManagerScript.instance.PlaySound(Sound.Explosion);
+
 
         } else if (collision.gameObject.tag == "EnemyShot") {
             //Destroy(collision.gameObject);
@@ -118,6 +125,8 @@ public class PlayerScript : MonoBehaviour {
             Instantiate(explosion, transform.position, Quaternion.identity);
             GameManager.instance.RetryPanelSetActiveAfter1sec();
             GameManager.instance.isAlive = false;
+            AudioManagerScript.instance.PlaySound(Sound.Explosion);
+
 
         } else if (collision.gameObject.tag == "BossShot") {
             //Destroy(collision.gameObject);
@@ -128,6 +137,8 @@ public class PlayerScript : MonoBehaviour {
             Instantiate(explosion, transform.position, Quaternion.identity);
             GameManager.instance.RetryPanelSetActiveAfter1sec();
             GameManager.instance.isAlive = false; //플레이어 사망 처리
+            AudioManagerScript.instance.PlaySound(Sound.Explosion);
+
         } else if (collision.gameObject.tag == "Boss") {
             //Destroy(collision.gameObject);
             BossScript bossScript = collision.GetComponent<BossScript>();
@@ -136,6 +147,7 @@ public class PlayerScript : MonoBehaviour {
             Instantiate(explosion, transform.position, Quaternion.identity);
             GameManager.instance.RetryPanelSetActiveAfter1sec();
             GameManager.instance.isAlive = false;
+            AudioManagerScript.instance.PlaySound(Sound.Explosion);
 
         }
 

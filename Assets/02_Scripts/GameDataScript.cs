@@ -11,7 +11,7 @@ public class GameDataScript : MonoBehaviour {
     public EnemyWave[] enemyWaves;
     public Enemy[] enemies;
     public static GameDataScript instance;
-    public float coin;      //전체코인-TotalCoin
+    public double coin;      //전체코인-TotalCoin
     private int stage;
     public int GetStage() {
         stage = PlayerPrefs.GetInt("Stage", 1);
@@ -52,11 +52,11 @@ public class GameDataScript : MonoBehaviour {
         for (int i = 1; i < lines.Length - 1; i++) {
             string[] rows = lines[i].Split("\t");
             int id = int.Parse(rows[0]);
-            float base_dmg = float.Parse(rows[1]);
+            double base_dmg = float.Parse(rows[1]);
             string name = rows[2];
             string kName = rows[3];
-            float unlockCoin = float.Parse(rows[4]);
-            float baseUpgradeCoin = float.Parse(rows[5]);
+            double unlockCoin = float.Parse(rows[4]);
+            double baseUpgradeCoin = float.Parse(rows[5]);
             //PlayerPrefs.GetInt-로컬저장소에 저장,두 번째 매개변수는 해당 키로 저장된 값이 없을 경우 반환할 기본 값           
             int chr_level = PlayerPrefs.GetInt("Chr_Level" + (i - 1).ToString(), 1);
             int locked;     //locked 선택 창 해금할지 말지 하는 변수, 0이면 해금.
@@ -98,34 +98,33 @@ public class GameDataScript : MonoBehaviour {
             string[] rows = lines[i].Split("\t");
             int type = int.Parse(rows[0]);
             string name = rows[1];
-            float hp = float.Parse(rows[2]);
+            double hp = double.Parse(rows[2]);
             float speed = float.Parse(rows[3]);
             float maxShotTime = float.Parse(rows[4]);
             float shotSpeed = float.Parse(rows[5]);
-            float coin = float.Parse(rows[6]);            
+            double coin = double.Parse(rows[6]);            
             enemies[i - 1] = new Enemy(type, name, hp, speed, maxShotTime, shotSpeed, coin);
         }
         for(int i=0;i<enemies.Length;i++) {
             enemies[i].Show();
         }
     }
-    public float GetCoin() {
-        this.coin = PlayerPrefs.GetFloat("TotalCoin", 0);
+    public double GetCoin() {
+        this.coin = Util.GetDouble("TotalCoin", 0);
         return this.coin;
     }
-    public void AddCoinInMenu(float coin) {
-        //PlayerPrefs.SetFloat-로컬저장소에서 불어옴
+    public void AddCoinInMenu(double coin) {
         this.coin += coin;
-        PlayerPrefs.SetFloat("TotalCoin", this.coin);
+        //PlayerPrefs.SetFloat("TotalCoin", this.coin);
+        Util.SetDouble("TotalCoin", this.coin);
         MenuManager.Instance.coinImage.gameObject.SetActive(true);
         MenuManager.Instance.coinText.gameObject.SetActive(true);
     }
-    public void AddCoin(float coin) {
-        //PlayerPrefs.SetFloat-로컬저장소에서 불어옴
+    public void AddCoin(double coin) {
         this.coin += coin;
-        PlayerPrefs.SetFloat("TotalCoin", this.coin);
+        Util.SetDouble("TotalCoin", this.coin);
     }
-    //11-7
+    //12-7
     public bool CanUnlock(int id) {
         if (GetCoin() > ships[id].unlockCoin) {
             if (ships[id].GetLock() == 1) {
@@ -145,7 +144,7 @@ public class GameDataScript : MonoBehaviour {
         ships[id].SetLock(0);
     }
     public bool CanUpgrade(int id) {
-        if (GetCoin() > ships[id].unlockCoin) {
+        if (GetCoin() >= ships[id].upgradeCoin) {
             return true;
         } else {
             return false;
@@ -164,22 +163,30 @@ public class GameDataScript : MonoBehaviour {
         }
         return list;
     }
-    public float GetEnemyHp(float base_hp,int stage) {
+    public double GetEnemyHp(double base_hp,int stage) {
         return base_hp * stage;
     }
-    public float GetEnemyCoin(float base_coin, int stage) {
+    public double GetEnemyCoin(double base_coin, int stage) {
         return base_coin * stage;
     }
-    public float GetAsteroidHp(int stage) {
-        return 1 * stage;
+    public double GetAsteroidHp(int stage) {
+        return 1d * stage;
     }
-    public float GetAsteroidCoin(int stage) {
-        return 2 * stage;
+    public double GetAsteroidCoin(int stage) {
+        return 2d * stage;
     }
-    public float GetBossHp(int stage) {
-        return 10 * stage;
+    public double GetBossHp(int stage) {
+        return 10d * stage;
     }
-    public float GetBossCoin(int stage) {
-        return 20 * stage;
+    public double GetBossCoin(int stage) {
+        return 20d * stage;
+    }
+    public bool CanSelect() {
+        if (ships[select].GetLock() == 0) {
+            return true;
+
+        } else {
+            return false;
+        }
     }
 }
