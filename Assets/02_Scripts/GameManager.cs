@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
     public float spawnTime = 2;
     public List<GameObject> enemies;        //유니티에서 프리팹 연결.
     public static GameManager instance;
-    public float coinInGame;
+    public double coinInGame;
     public float maxRight;
     public GameObject retryPanel;
     public Text coinInRetryText;
@@ -74,7 +74,8 @@ public class GameManager : MonoBehaviour {
         } else {
             SpawnEnemyWave();
         }
-        
+        AudioManagerScript.instance.PlayMusic(Music.Play);
+
     }
     public float asteroidTime = 0;
     public float asteroidSpawnTime = 3;
@@ -89,8 +90,8 @@ public class GameManager : MonoBehaviour {
                     GameObject boss=Instantiate(bossObj,
                         new Vector3(10,0,0), Quaternion.identity);
                     BossScript bossScript= boss.GetComponent<BossScript>();
-                    float hp = GameDataScript.instance.GetBossHp(stageInGame);
-                    float coin = GameDataScript.instance.GetBossCoin(stageInGame);
+                    double hp = GameDataScript.instance.GetBossHp(stageInGame);
+                    double coin = GameDataScript.instance.GetBossCoin(stageInGame);
                     bossScript.Init(hp, coin);
                     bossSpawn = true;
                 }
@@ -113,8 +114,8 @@ public class GameManager : MonoBehaviour {
             obj.transform.position = vec;
             obj.transform.rotation = Quaternion.identity;
             AsteroidScript asteroidScript = obj.GetComponent<AsteroidScript>();
-            float hp = GameDataScript.instance.GetAsteroidHp(stageInGame);
-            float coin = GameDataScript.instance.GetAsteroidCoin(stageInGame);
+            double hp = GameDataScript.instance.GetAsteroidHp(stageInGame);
+            double coin = GameDataScript.instance.GetAsteroidCoin(stageInGame);
             asteroidScript.Init(hp,coin);
             asteroidTime = 0;
         }
@@ -170,8 +171,8 @@ public class GameManager : MonoBehaviour {
             enemyObj.transform.rotation = Quaternion.identity;
             EnemyScript enemyScript=enemyObj.GetComponent<EnemyScript>();
             Enemy enemy=GameDataScript.instance.enemies[enemyType];
-            float cur_hp=GameDataScript.instance.GetEnemyHp(enemy.hp, stageInGame);
-            float cur_coin = GameDataScript.instance.GetEnemyCoin(enemy.coin, stageInGame);
+            double cur_hp =GameDataScript.instance.GetEnemyHp(enemy.hp, stageInGame);
+            double cur_coin = GameDataScript.instance.GetEnemyCoin(enemy.coin, stageInGame);
             enemyScript.Init(enemyType,enemy.name,cur_hp,enemy.speed,enemy.maxShotTime,enemy.shotSpeed, cur_coin);
         }
         remainEnemy += count;
@@ -228,6 +229,15 @@ public class GameManager : MonoBehaviour {
         stageInClearText.text = stageInGame.ToString();
         coinInClearText.text = coinInGame.ToString();
         clearPanel.SetActive(true);
+    }
+    public void CreateFloatingText(string text,Vector3 pos) {
+        GameObject obj = ObjectPoolManager.instance.floatingText.Create();
+        Transform canvasTr = GameObject.Find("Canvas").transform;
+        obj.transform.SetParent(canvasTr, false);
+        obj.transform.position = pos;
+        obj.GetComponent<Text>().text = text;
+        FloatingTextScript floatingTextScript =obj.GetComponent<FloatingTextScript>();
+        floatingTextScript.Init();
     }
 
 }

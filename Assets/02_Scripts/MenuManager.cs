@@ -47,11 +47,17 @@ public class MenuManager : MonoBehaviour {
             coinText.text = GameDataScript.instance.GetCoin().ToString();
 
         }
-
+        AudioManagerScript.instance.PlayMusic(Music.Menu);
     }
 
     public void GoGameScene() {
-        SceneManager.LoadScene("GameScene");
+        if (GameDataScript.instance.CanSelect()) {
+            SceneManager.LoadScene("GameScene");
+        } else {
+            GameDataScript.instance.select = 0;
+            SceneManager.LoadScene("GameScene");
+
+        }
     }
     public void Quit() {
         Application.Quit();

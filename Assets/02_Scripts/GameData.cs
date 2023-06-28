@@ -5,9 +5,62 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game {
+    public enum Music { Menu,Play};
+    public enum Sound { PlayerShot, Explosion,Coin };
+
     public delegate void Onclick();
     //12-16~17
     public class Util {
+        public static void SetDouble(string key, double value) {
+            PlayerPrefs.SetString(key, DoubleToString(value));
+        }
+        public static double GetDouble(string key, double defaultValue) {
+            string defaultVal = DoubleToString(defaultValue);
+            return StringToDouble(PlayerPrefs.GetString(key, defaultVal));
+        }
+        public static double GetDouble(string key) {
+            return GetDouble(key, 0d);
+        }
+
+        private static string DoubleToString(double target) {
+            return target.ToString("G17");
+        }
+        private static double StringToDouble(string target) {
+            if (string.IsNullOrEmpty(target))
+                return 0d;
+
+            return double.Parse(target);
+        }
+        static string[] digit = new string[] { "", "k", "m", "g", "t", "p", "e", "z", "y",
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+        "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+    };
+
+        public static string GetBigNumber(double number) {
+            if (number < 1000) {
+                return number.ToString();
+            }
+            double expNum;
+            int powNum;
+            string numStr = number.ToString("E");
+            //1.000000E+003
+            string[] parts = numStr.Split('+');
+            if (parts.Length < 2) {
+                return "";
+            } else {
+                string expPart = parts[0].Remove(parts[0].Length - 1);
+                string powPart = parts[1];
+                expNum = double.Parse(expPart);
+                powNum = int.Parse(powPart);
+                int index = powNum / 3;
+                int multiple = powNum % 3;
+                expNum = expNum * Mathf.Pow(10, multiple);
+                string firstStr = string.Format("{0:n3}", expNum);
+                string secondStr = digit[index];
+                string result = string.Concat(firstStr, secondStr);
+                return result;
+            }
+        }
         public static void CreatePopup(string title, string detail,
             Onclick yesAction, Onclick noAction) {
             GameObject popupObj = Resources.Load<GameObject>("Popup");
@@ -32,18 +85,18 @@ namespace Game {
     }//여까지
 
     public struct ShipData {
-        public int id; public float base_dmg; public string name;
+        public int id; public double base_dmg; public string name;
         public string kName;
         public int chr_level;
         public int locked;      //비행기 하나하나의 해금 관리
-        public float dmg;
-        public float nextDmg;
-        public float unlockCoin;
-        public float upgradeCoin;
-        public float base_upgradecoin;
-        public ShipData(int id, float base_dmg, string name, string kName,
-            float unlockCoin, float base_upgradecoin,
-            int chr_level = 1, int locked = 1, float dmg = 1, float nextDmg = 1, float upgradeCoin = 100) {
+        public double dmg;
+        public double nextDmg;
+        public double unlockCoin;
+        public double upgradeCoin;
+        public double base_upgradecoin;
+        public ShipData(int id, double base_dmg, string name, string kName,
+            double unlockCoin, double base_upgradecoin,
+            int chr_level = 1, int locked = 1, double dmg = 1, double nextDmg = 1, double upgradeCoin = 100) {
             this.id = id;
             this.base_dmg = base_dmg;
             this.name = name;
@@ -115,13 +168,13 @@ namespace Game {
     public struct Enemy {
         public int id;
         public string name;
-        public float hp;
+        public double hp;
         public float speed;
         public float maxShotTime;
         public float shotSpeed;
-        public float coin;
-        public Enemy(int id, string name, float hp, float speed, float maxShotTime,
-            float shotSpeed, float coin) {
+        public double coin;
+        public Enemy(int id, string name, double hp, float speed, float maxShotTime,
+            float shotSpeed, double coin) {
             this.id = id;
             this.name = name;
             this.hp = hp;
