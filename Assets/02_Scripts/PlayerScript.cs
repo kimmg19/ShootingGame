@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour {
     Vector2 colSize;
     Vector2 chrSize;
     public double dmg;
+    public string horizontalAxis = "Horizontal";
+    public string verticalAxis = "Vertical";
     public SpriteRenderer spr;
     void Start() {
 
@@ -39,15 +41,27 @@ public class PlayerScript : MonoBehaviour {
     }
     //플레이어 이동 함수
     void Move() {
-        float x = Input.GetAxisRaw("Horizontal");   //1,-1 출력
-        float y = Input.GetAxisRaw("Vertical");     //1,-1 출력
+        float newX;
+        float newY;
+        if (Application.platform == RuntimePlatform.Android) {
+            float x = SimpleInput.GetAxisRaw(horizontalAxis);   //1,-1 출력
+            float y = SimpleInput.GetAxisRaw(verticalAxis);     //1,-1 출력
 
-        Vector3 dir = new Vector3(x, y, 0).normalized;
-        transform.position += dir * Time.deltaTime * speed;    //방향*시간*속도=벡터
+            Vector3 dir = new Vector3(x, y, 0).normalized;
+            transform.position += dir * Time.deltaTime * speed;    //방향*시간*속도=벡터
 
-        float newX = transform.position.x;    //비행기의 x좌표
-        float newY = transform.position.y;    //비행기의 y좌표
+            newX = transform.position.x;    //비행기의 x좌표
+            newY = transform.position.y;    //비행기의 y좌표
+        } else {
+            float x = Input.GetAxisRaw("Horizontal");   //1,-1 출력
+            float y = Input.GetAxisRaw("Vertical");     //1,-1 출력
 
+            Vector3 dir = new Vector3(x, y, 0).normalized;
+            transform.position += dir * Time.deltaTime * speed;    //방향*시간*속도=벡터
+
+            newX = transform.position.x;    //비행기의 x좌표
+            newY = transform.position.y;    //비행기의 y좌표
+        }
         //clamp 함수 밑의 주석문을 함수로 구현.
         newX = Mathf.Clamp(newX, min.x + chrSize.x, max.x - chrSize.x);
         newY = Mathf.Clamp(newY, min.y + chrSize.y, max.y - chrSize.y);
@@ -61,24 +75,24 @@ public class PlayerScript : MonoBehaviour {
     //발사체 생성 함수
     void PlayerShot() {
         shotDelay += Time.deltaTime;
-        if (Input.GetKey(KeyCode.Space)) {
-            if (shotDelay > shotMax) {
-                //발사체의 위치 지정.
-                Vector3 vec = new Vector3(transform.position.x + 1.12f,
-                    transform.position.y - 0.2f, transform.position.z);
+        if (shotDelay > shotMax) {
+            //발사체의 위치 지정.
+            Vector3 vec = new Vector3(transform.position.x + 1.12f,
+                transform.position.y - 0.2f, transform.position.z);
 
-                //발사체 생성,3번째거는 물체 회전 담당
-                //GameObject shotObj= Instantiate(shot, vec, Quaternion.identity);
-                GameObject shotObj = ObjectPoolManager.instance.playerShot.Create();
-                shotObj.transform.position = vec;
-                shotObj.transform.rotation = Quaternion.identity;
+            //발사체 생성,3번째거는 물체 회전 담당
+            //GameObject shotObj= Instantiate(shot, vec, Quaternion.identity);
+            GameObject shotObj = ObjectPoolManager.instance.playerShot.Create();
+            shotObj.transform.position = vec;
+            shotObj.transform.rotation = Quaternion.identity;
 
-                ShotScript shotScript = shotObj.GetComponent<ShotScript>();
-                shotScript.dmg = dmg;
-                shotDelay = 0;
-                AudioManagerScript.instance.PlaySound(Sound.PlayerShot);
-            }
+            ShotScript shotScript = shotObj.GetComponent<ShotScript>();
+            shotScript.dmg = dmg;
+            shotDelay = 0;
+            AudioManagerScript.instance.PlaySound(Sound.PlayerShot);
         }
+
+
     }
 
     //충돌 검사 함수
