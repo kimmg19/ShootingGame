@@ -93,10 +93,11 @@ public class EnemyScript : MonoBehaviour {
         }
     }
     public void DestroyGameObject(int type=0) {
-        if(type==0) {
+        GameManager.instance.remainEnemy--;
+        if (type==0) {
             ObjectPoolManager.instance.enemies[type].Destroy(gameObject);
         } else {
-            GameManager.instance.remainEnemy--;
+            print("¿©±â");
             destroyFlag = true;
             Collider2D col = GetComponent<Collider2D>();
             col.enabled = false;
