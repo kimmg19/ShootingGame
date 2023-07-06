@@ -142,10 +142,10 @@ public class BossScript : MonoBehaviour
     }
    
     public void DestroyGameObject(int type = 0) {
+        GameManager.instance.remainEnemy--;
         if (type == 0) {
             Destroy(gameObject);
         } else {
-            GameManager.instance.remainEnemy--;
             destroyFlag = true;
             Collider2D col = GetComponent<Collider2D>();
             col.enabled = false;
